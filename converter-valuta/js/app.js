@@ -14,6 +14,7 @@ fromInput.value = 1;
 eventListeners();
 checkLi();
 
+
 function eventListeners() {
     ulFrom.addEventListener("click", fromValue);
     ulTo.addEventListener("click", toValue);
@@ -22,6 +23,7 @@ function eventListeners() {
     ulTo.addEventListener("click", getData);
     ulFrom.addEventListener("click", getData);
     document.addEventListener("DOMContentLoaded", getData);
+    toInput.addEventListener("keyup", getData2);
 }
 
 function getData(e) {
@@ -38,6 +40,23 @@ function getData(e) {
             calc(out);
         });
 }
+
+function getData2(e) {
+    let out2;
+    e.preventDefault();
+    fetch(`https://api.exchangerate.host/latest?base=${to}&symbols=${from}`)
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            out2 = Object.values(data.rates)[0];
+            toP.innerText = `1 ${to} = ${1 / out2} ${from}`;
+            fromP.innerText = `1 ${from} = ${out2} ${to}`;
+
+            calc2(out2);
+        });
+}
+
 
 function fromValue(e) {
     if (e.target.className === "li-from") {
@@ -57,6 +76,11 @@ function toValue(e) {
 
 function calc(out) {
     toInput.value = (out * fromInput.value).toFixed(4);
+
+}
+
+function calc2(out2) {
+    fromInput.value = (out2 * toInput.value).toFixed(4);
 }
 
 function checkLi() {
